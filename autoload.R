@@ -4,13 +4,16 @@ library(caret)
 library(doParallel)
 registerDoParallel(cores=4)
 db <- read.csv('data.csv')
-
+genderDb <- split(db, db$cinsiyet)
 bfpCols <- names(db)[grepl('yagyuz', names(db))]
 totalFatCols <- names(db)[grepl('totyag', names(db))]
 indexCols <- names(db)[grepl('indeks_', names(db))]
-db$X <- NULL
+
+
 inputCols <- names(db)[! (names(db) %in% c(bfpCols, totalFatCols, indexCols,
                                            'gozlemno')) ]
+
+
 toFormula <- function(features, resp= 'DEXAyagyuz') {
   return(as.formula(paste(resp, '~', paste(features, collapse='+'))))
 }
