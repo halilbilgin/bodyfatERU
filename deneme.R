@@ -2,22 +2,25 @@ source('autoload.R', chdir=T)
 
 
 
-tt <- trTest(db[db$cinsiyet==2,], inputCols)
+tt <- trTest(db[db$cinsiyet==1,], inputCols, p=0.7)
 
 vifFm <- vif_func(db[, inputCols], thresh = 5, trace=F)
 
-fm <- aic(c(toFormula(inputCols[-2], 'DEXAtotyag')), 
-          db[db$cinsiyet==2,], steps=1000,
-          starting='DEXAtotyag~1', direction='both')[[1]]
+fm <- aic(c(toFormula(inputCols[-2], 'DEXAyagyuz')), 
+          db[db$cinsiyet==1, ], steps=1000,
+          starting='DEXAyagyuz~1', direction='both')[[1]]
 
 
-c('gaussprPoly', 'neuralnet', 'brnn')
-fit.brnn <- train(fm, tt$train, method = "glm", 
-      trControl = trainControl(method='none', number=5,repeats=3))
+c('gaussprPoly', 'brnn', 'lars')
+
+fit.brnn <- train(toFormula(inputCols[-2]), tt$train, 
+                  method = "glm", 
+      trControl = trainControl(method='repeatedcv', number=5,repeats=10))
 
 
 
 predicted.brnn <- predict(fit.brnn, newdata=tt$test)
-fitResult(predicted.brnn, tt$test$DEXAtotyag)
+fitResult(predicted.brnn, tt$test$DEXAyagyuz)
 
-fitResult(tt$test$BIAyagyuz, tt$test$DEXAtotyag)
+fitResult(tt$test$BIAyagyuz, tt$test$DEXAyagyuz)
+

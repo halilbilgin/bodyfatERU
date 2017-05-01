@@ -11,7 +11,7 @@ indexCols <- names(db)[grepl('indeks_', names(db))]
 
 
 inputCols <- names(db)[! (names(db) %in% c(bfpCols, totalFatCols, indexCols,
-                                           'gozlemno')) ]
+                                           'gozlemno', 'X')) ]
 
 
 toFormula <- function(features, resp= 'DEXAyagyuz') {
