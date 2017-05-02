@@ -6,13 +6,13 @@ ctrl <- safsControl(functions = caretSA,
                     repeats = 10,
                     number=5,
                     ## What should we optimize? 
-                    metric = c(internal = "AIC",
-                               external = "AIC"),
+                    metric = c(internal = "RMSE",
+                               external = "RMSE"),
                     maximize = c(internal = FALSE,
                                  external = FALSE),
                     improve = 25,
                     allowParallel = TRUE)
-knn_groups <- lapply(genderDb, function(gdb) {
+glm_sa <- lapply(genderDb, function(gdb) {
   safs(x = gdb[, get('inputCols')[-2]],
        y = gdb$DEXAyagyuz,
        iters = 500,
@@ -22,5 +22,5 @@ knn_groups <- lapply(genderDb, function(gdb) {
 })
 
 
-save(knn_groups, file='glm_sa.RData')
+save(glm_sa, file='glm_sa.RData')
 
