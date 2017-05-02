@@ -12,15 +12,15 @@ ctrl <- safsControl(functions = caretSA,
                                  external = FALSE),
                     improve = 25,
                     allowParallel = TRUE)
-glm_sa <- lapply(genderDb, function(gdb) {
+knn_sa <- lapply(genderDb, function(gdb) {
   safs(x = gdb[, get('inputCols')[-2]],
        y = gdb$DEXAyagyuz,
        iters = 500,
        safsControl = ctrl,
-       method='glm'
+       method='knn'
        )
 })
 
 
-save(glm_sa, file='glm_sa.RData')
+save(knn_sa, file='knn_sa.RData')
 
