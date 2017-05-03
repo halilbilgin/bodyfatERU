@@ -115,7 +115,9 @@ result <- data.frame(
   fm=character(),
   RMSE=numeric(),
   MAPE=numeric(),
-  RSquared=numeric()
+  RSquared=numeric(),
+  Spearman=numeric(),
+  MAE=numeric()
 )
 
 trControlSeeds <- getTrControlSeeds()
@@ -154,7 +156,9 @@ for(genderDbID in names(genderDb)) {
             fm=fmName ,
             RMSE=rmse(error),
             MAPE=mape(tt$test$DEXAyagyuz, predicted),
-            RSquared=rSquared(tt$test$DEXAyagyuz, predicted)
+            RSquared=rSquared(tt$test$DEXAyagyuz, predicted),
+            Spearman=rcorr(tt$test$DEXAyagyuz, predicted, type="spearman"),
+            MAE=mae(error)
           )
           
           result <- rbind(result, curResult)
