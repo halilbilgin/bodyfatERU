@@ -170,3 +170,5 @@ for(genderDbID in names(genderDb)) {
   
 }
 
+x<- trSplitSeeds
+save(result, file=paste('result-', x[1], '-', x[length(x)], '.RData', sep = ''))
