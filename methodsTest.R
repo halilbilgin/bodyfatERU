@@ -76,9 +76,6 @@ methods <- c(
         )
 
 #initialize formulas list
-
-
-
 load('rfGA30-100.RData')
 load('rf_sa.RData')
 fms <- list(
