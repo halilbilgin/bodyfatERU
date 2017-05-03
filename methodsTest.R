@@ -20,7 +20,6 @@ methods <- c(
         'spikeslab',
         'blasso',
         'svmPoly',
-        'rvmLinear',
         'enet',
         'ridge',
         'evtree',
@@ -46,8 +45,6 @@ methods <- c(
         'rqlasso',
         'krlsRadial',
         'relaxo',
-        'rvmPoly',
-        'rvmRadial', 
         'rlm',
         'FS.HGD',
         'SBC',
@@ -86,6 +83,7 @@ load('rfGA30-100.RData')
 load('rf_sa.RData')
 fms <- list(
   `1`=list(
+    `All`=toFormula(inputCols[-2]),
     `SimulatedAnnealing`= toFormula(rf_sa_groups$`1`$optVariables),
     `GeneticAlgorithm`=toFormula(rf_groups$`1`$optVariables),
     `forward`=toFormula(c('kilo', 'cev_kalca', 'dkk_biceps', 
@@ -95,6 +93,7 @@ fms <- list(
                            'dkk_quadriceps'))
   ),
   `2`=list(
+    `All`=toFormula(inputCols[-2]),
     `SimulatedAnnealing`=toFormula(rf_sa_groups$`2`$optVariables),
     `GeneticAlgorithm`=toFormula(rf_groups$`2`$optVariables),
     `forward`=toFormula(c('kilo', 'cev_bel', 'dkk_triceps',
