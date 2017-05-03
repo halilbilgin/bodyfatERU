@@ -111,7 +111,7 @@ scaleDb <- function(dataset, inputCols) {
     
   }))) 
 }
-trTest <- function(dataset, inputCols, p = 0.75) {
+trTest <- function(dataset, p = 0.75) {
   dataset[, 'train'] <- ifelse(runif(nrow(dataset)) <= p, 1, 0)
   
   trData <- dataset[dataset[, 'train'] == 1,]
@@ -119,25 +119,8 @@ trTest <- function(dataset, inputCols, p = 0.75) {
   trData[,'train'] <- NULL
   
   tData[,'train'] <- NULL
-  scaledtrain <- as.data.frame(lapply(trData, function(x) rep.int(NA, length(x))))
-  scaledtest <- as.data.frame(lapply(tData, function(x) rep.int(NA, length(x))))
-  
-  for(feature in colnames(trData)) {
-    x <- trData[, feature]
-    if(is.numeric(x) && (feature %in% inputCols) ){
-      newRow <- c(sd(x), mean(x))
-      
-      scaledtrain[, feature] <- (trData[, feature] - newRow[2]) / newRow[1]
-      scaledtest[, feature] <- (tData[, feature] - newRow[2]) / newRow[1]
-    } else {
-      scaledtrain[, feature] <- trData[, feature]
-      scaledtest[, feature] <- tData[, feature]
-    }
-    
-    
-  }
-  
-  return(list(train=scaledtrain, test=scaledtest))
+
+  return(list(train=trData, test=tData))
 }
 rmse <- function(error){
   sqrt(mean(error^2))
@@ -146,6 +129,21 @@ rmse <- function(error){
 mae <- function(error){
   mean(abs(error))
 }
+mape <- function(actual, predicted) {
+  mean(abs((actual - predicted)/actual))
+}
+rSquared <- function(truth, prediction) {
+  mTruth <- mean(truth)
+  
+  SStot <- sum((truth-mTruth)^2)
+  
+  SSres <- sum((truth-prediction)^2)
+  
+  return(1 - SSres/SStot)
+  
+}
+
+
 fitResult <- function(predicted, truth, ...) {
   error <- truth - predicted
   data.frame(
@@ -154,3 +152,17 @@ fitResult <- function(predicted, truth, ...) {
     MAE=mae(error)
   )
 }
+
+getTrControlSeeds <- function() {
+  seeds <- vector(mode = "list", length = 51)
+  
+  for(i in 1:50) {
+    set.seed(1+i*100)
+    seeds[[i]]<- sample.int(n=1000, 81)
+  }
+  set.seed(1)
+  seeds[[51]]<-sample.int(1000, 1)
+  
+  return(seeds)
+}
+seed <- 5
