@@ -120,7 +120,8 @@ result <- data.frame(
 )
 
 trControlSeeds <- getTrControlSeeds()
-trSplitSeeds <- 21:30
+load("trSplitSeeds.RData") 
+
 
 for(genderDbID in names(genderDb)) {
   #length is = (n_repeats*nresampling)+1
@@ -162,6 +163,7 @@ for(genderDbID in names(genderDb)) {
           
           result <- rbind(result, curResult)
           remove(fit)
+          gc()
           print(curResult)
         }
       }
