@@ -1,3 +1,6 @@
+list.of.packages <- c('doParallel', 'Hmisc', 'fmsb', 'caret', 'frbs', 'brnn', 'monomvn', 'Cubist', 'elasticnet', 'enpls', 'fastICA', 'rPython', 'lars', 'MASS', 'RWeka', 'nnet', 'rqPen', 'nnls', 'penalized', 'KRLS', 'pls', 'e1071', 'ranger', 'quantregForest', 'qrnn', 'kernlab', 'relaxo', 'plyr', 'spikeslab', 'superpc', 'bartMachine', 'arm', 'mboost', 'bst', 'party', 'rpart', 'randomGLM', 'xgboost', 'elmNN', 'gam', 'mgcv', 'h2o', 'kknn', 'RSNNS', 'earth', 'randomForest', 'RRF', 'kohonen', 'deepnet', 'gbm', 'evtree', 'nodeHarvest')
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages, dependencies = T)
 library(MASS)
 library(fmsb)
 library(caret)
