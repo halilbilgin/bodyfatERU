@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 library("optparse")
-
+source('methodsTest.R')
 allMethods <- read.csv('allMethods.txt')
 option_list = list(
   make_option(c("-m", "--methods"), type="character", default=1:3),
