@@ -12,4 +12,4 @@ opt = parse_args(opt_parser);
 methods <- allMethods[eval(parse(text = opt$methods)), 1]
 seeds <- eval(parse(text=opt$seeds))
 
-methodsTest(methods, seeds, paste(opt$methods,'-',seeds))
+methodsTest(methods, seeds, paste(opt$methods,'-',seeds, sep = ''))

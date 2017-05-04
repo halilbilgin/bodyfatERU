@@ -84,6 +84,8 @@ methodsTest <- function(methods, trSplitSeeds, fileSuffix) {
             remove(fit)
             gc()
             print(curResult)
+            save(result, file=paste('result-', fileSuffix, '.RData', sep = ''))
+            
           }
         }
       }
@@ -91,7 +93,6 @@ methodsTest <- function(methods, trSplitSeeds, fileSuffix) {
     
   }
   
-  save(result, file=paste('result-', fileSuffix, '.RData', sep = ''))
 }
 
 
