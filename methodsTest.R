@@ -42,8 +42,6 @@ methods <- c(
         'krlsRadial',
         'relaxo',
         'rlm',
-        'FS.HGD',
-        'SBC',
         'lasso',
         'bartMachine',
         'gamboost',
