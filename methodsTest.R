@@ -25,7 +25,6 @@ methods <- c(
         'icr',
         'lars',
         'lm',
-        'nnet',
         'rqnc',
         'nnls',
         'penalized',
