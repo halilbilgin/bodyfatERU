@@ -3,8 +3,7 @@ library(fmsb)
 library(caret)
 library(doParallel)
 library(Hmisc)
-registerDoParallel(cores=4)
-db <- read.csv('data.csv')
+db <- read.csv('./data.csv')
 genderDb <- split(db, db$cinsiyet)
 bfpCols <- names(db)[grepl('yagyuz', names(db))]
 totalFatCols <- names(db)[grepl('totyag', names(db))]
@@ -112,7 +111,7 @@ scaleDb <- function(dataset, inputCols) {
     
   }))) 
 }
-trTest <- function(dataset, p = 0.75) {
+trTest <- function(dataset, p = 0.75, scale.data=F) {
   dataset[, 'train'] <- ifelse(runif(nrow(dataset)) <= p, 1, 0)
   
   trData <- dataset[dataset[, 'train'] == 1,]
@@ -120,9 +119,32 @@ trTest <- function(dataset, p = 0.75) {
   trData[,'train'] <- NULL
   
   tData[,'train'] <- NULL
+  
+  if(scale.data) {
+    scaledtrain <- as.data.frame(lapply(trData, function(x) rep.int(NA, length(x))))
+    scaledtest <- as.data.frame(lapply(tData, function(x) rep.int(NA, length(x))))
+ 
+    for(feature in names(trData)) {
+      if(!(feature %in% inputCols[-2])) {
+        scaledtrain[, feature] <- trData[, feature]
+        scaledtest[, feature] <- tData[, feature]
+        next
+      }
+      x <- trData[, feature]
+      newRow <- c(sd(x), mean(x))
+      
+      scaledtrain[, feature] <- (trData[, feature] - newRow[2]) / newRow[1]
+      scaledtest[, feature] <- (tData[, feature] - newRow[2]) / newRow[1]
+     
+      
+    }
+    trData <- scaledtrain
+    tData <- scaledtest
+  }
 
   return(list(train=trData, test=tData))
 }
+
 rmse <- function(error){
   sqrt(mean(error^2))
 }
@@ -141,7 +163,7 @@ rSquared <- function(truth, prediction) {
   SSres <- sum((truth-prediction)^2)
   
   return(1 - SSres/SStot)
-  
+  #return(cor(truth, predicted, method='pearsossn')^2)
 }
 
 
