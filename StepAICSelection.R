@@ -34,7 +34,7 @@ aic_groups <- lapply(genderDb, function(gdb) {
   names(train(allFm, gdb, method='glmStepAIC', 
                              trControl = trainControl(method = 'repeatedcv',
                              number=5,
-                             seeds=trControlSeeds,
+                             seeds=get('getTrControlSeeds')(),
                              repeats=10))$finalModel$coefficients)[-1]
 
 })
