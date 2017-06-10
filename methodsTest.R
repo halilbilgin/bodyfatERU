@@ -1,6 +1,6 @@
 methodsTest <- function(methods, 
                         formulasForTest = c('All', 'SimulatedAnnealing', 'GeneticAlgorithm', 'forward',
-                                    'backward', 'stepAIC'),
+                                    'backward'),
                         gendersForTest = c('1', '2'), 
                         trSplitSeeds = 1:50,
                         fileSuffix='try') {
