@@ -36,12 +36,9 @@ methodsTest <- function(methods,
                       'Formula:', fmName, "\n"))
             set.seed(trSplitSeed)
             indices = createMultiFolds(tt$train$DEXAyagyuz, k = 5, times = 10)
-            
             fit <- try(train(as.formula(fm), data=tt$train, method=method,
                              trControl=trainControl(method = 'repeatedcv',
-                                                    number=5,
                                                     seeds=trControlSeeds,
-                                                    repeats=10,
                                                     index= indices
                                                     )), TRUE)
             if(inherits(fit, "try-error")){
