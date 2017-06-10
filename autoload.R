@@ -18,88 +18,6 @@ toFormula <- function(features, resp= 'DEXAyagyuz') {
   return(as.formula(paste(resp, '~', paste(features, collapse='+'))))
 }
 
-
-aic <- function(scopes, data, starting='DEXAyagyuz~1',
-                direction='both', steps=100) {
-  features <- list()
-  starting <- as.formula(starting)
-  
-  fit <- glm(starting, data=data, control=glm.control(maxit=10000))
-  
-  for(scope in scopes) {
-    step <- stepAIC(fit, scope, direction=direction, steps = steps, trace=T, k=2)
-    features <- append(features, list(step$formula))
-    
-  }
-  
-  names(features) <- names(scopes)
-  
-  return(features)
-}
-vif_func<-function(in_frame,thresh=10,trace=T,...){
-  
-  
-  
-  if(class(in_frame) != 'data.frame') in_frame<-data.frame(in_frame)
-  
-  #get initial vif value for all comparisons of variables
-  vif_init<-NULL
-  var_names <- names(in_frame)
-  for(val in var_names){
-    regressors <- var_names[-which(var_names == val)]
-    form <- paste(regressors, collapse = '+')
-    form_in <- formula(paste(val, '~', form))
-    vif_init<-rbind(vif_init, c(val, VIF(lm(form_in, data = in_frame, ...))))
-  }
-  vif_max<-max(as.numeric(vif_init[,2]), na.rm = TRUE)
-  
-  if(vif_max < thresh){
-    if(trace==T){ #print output of each iteration
-      prmatrix(vif_init,collab=c('var','vif'),rowlab=rep('',nrow(vif_init)),quote=F)
-      cat('\n')
-      cat(paste('All variables have VIF < ', thresh,', max VIF ',round(vif_max,2), sep=''),'\n\n')
-    }
-    return(var_names)
-  }
-  else{
-    
-    in_dat<-in_frame
-    
-    #backwards selection of explanatory variables, stops when all VIF values are below 'thresh'
-    while(vif_max >= thresh){
-      
-      vif_vals<-NULL
-      var_names <- names(in_dat)
-      
-      for(val in var_names){
-        regressors <- var_names[-which(var_names == val)]
-        form <- paste(regressors, collapse = '+')
-        form_in <- formula(paste(val, '~', form))
-        vif_add<-VIF(lm(form_in, data = in_dat, ...))
-        vif_vals<-rbind(vif_vals,c(val,vif_add))
-      }
-      max_row<-which(vif_vals[,2] == max(as.numeric(vif_vals[,2]), na.rm = TRUE))[1]
-      
-      vif_max<-as.numeric(vif_vals[max_row,2])
-      
-      if(vif_max<thresh) break
-      
-      if(trace==T){ #print output of each iteration
-        prmatrix(vif_vals,collab=c('var','vif'),rowlab=rep('',nrow(vif_vals)),quote=F)
-        cat('\n')
-        cat('removed: ',vif_vals[max_row,1],vif_max,'\n\n')
-        flush.console()
-      }
-      
-      in_dat<-in_dat[,!names(in_dat) %in% vif_vals[max_row,1]]
-      
-    }
-    
-    return(names(in_dat))
-    
-  }
-  
-}
 scaleDb <- function(dataset, inputCols) {
   return(as.data.frame(sapply(colnames(dataset), function(x) {
     if(is.numeric(dataset[, x]) && (x %in% inputCols)) {
@@ -189,3 +107,30 @@ getTrControlSeeds <- function() {
   return(seeds)
 }
 seed <- 5
+
+load('rfGA30-100.RData')
+load('rf_sa.RData')
+load('glmStepAIC.RData')
+fms <- list(
+  `1`=list(
+    `All`=toFormula(inputCols[-2]),
+    `SimulatedAnnealing`= toFormula(rf_sa_groups$`1`$optVariables),
+    `GeneticAlgorithm`=toFormula(rf_groups$`1`$optVariables),
+    `forward`=toFormula(c('kilo', 'cev_kalca', 'dkk_biceps', 
+                          'dkk_quadriceps')),
+    `backward`=toFormula(c('cev_kalca', 'cev_uyluk', 'cev_elblegi',
+                           'cev_kulacuzun', 'dkk_triceps', 'dkk_sscapula',
+                           'dkk_quadriceps'))
+  ),
+  `2`=list(
+    `All`=toFormula(inputCols[-2]),
+    `SimulatedAnnealing`=toFormula(rf_sa_groups$`2`$optVariables),
+    `GeneticAlgorithm`=toFormula(rf_groups$`2`$optVariables),
+    `forward`=toFormula(c('kilo', 'cev_bel', 'dkk_triceps',
+                          'dkk_sscapula', 'dkk_quadriceps', 'dkk_gogus')),
+    `backward`=toFormula(c('cev_boyun', 'cev_bel', 'cev_kulacuzun',
+                           'dkk_sscapula', 'dkk_silliak',
+                           'dkk_abdomen', 'dkk_quadriceps',
+                           'dkk_gogus'))
+  )
+)

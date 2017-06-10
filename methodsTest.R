@@ -1,37 +1,12 @@
-load('rfGA30-100.RData')
-load('rf_sa.RData')
-load('glmStepAIC.RData')
-methodsTest <- function(methods, trSplitSeeds, fileSuffix, scale.data=F, 
+
+methodsTest <- function(methods, 
                         formulasForTest = c('All', 'SimulatedAnnealing', 'GeneticAlgorithm', 'forward',
                                     'backward', 'stepAIC'),
-                        gendersForTest = c('1', '2')) {
-  #initialize formulas list
-  fms <- list(
-    `1`=list(
-      `All`=toFormula(inputCols[-2]),
-      `SimulatedAnnealing`= toFormula(rf_sa_groups$`1`$optVariables),
-      `GeneticAlgorithm`=toFormula(rf_groups$`1`$optVariables),
-      `forward`=toFormula(c('kilo', 'cev_kalca', 'dkk_biceps', 
-                            'dkk_quadriceps')),
-      `backward`=toFormula(c('cev_kalca', 'cev_uyluk', 'cev_elblegi',
-                             'cev_kulacuzun', 'dkk_triceps', 'dkk_sscapula',
-                             'dkk_quadriceps')),
-      `stepAIC`=toFormula(aic_groups$`1`)
-    ),
-    `2`=list(
-      `All`=toFormula(inputCols[-2]),
-      `SimulatedAnnealing`=toFormula(rf_sa_groups$`2`$optVariables),
-      `GeneticAlgorithm`=toFormula(rf_groups$`2`$optVariables),
-      `forward`=toFormula(c('kilo', 'cev_bel', 'dkk_triceps',
-                            'dkk_sscapula', 'dkk_quadriceps', 'dkk_gogus')),
-      `backward`=toFormula(c('cev_boyun', 'cev_bel', 'cev_kulacuzun',
-                             'dkk_sscapula', 'dkk_silliak',
-                             'dkk_abdomen', 'dkk_quadriceps',
-                             'dkk_gogus')),
-      `stepAIC`=toFormula(aic_groups$`2`)
-    )
-  )
-  
+                        gendersForTest = c('1', '2'), 
+                        trSplitSeeds = 1:50,
+                        fileSuffix='try') {
+
+  source('autoload.R')
   
   ## initialize result data frame
   result <- data.frame(
@@ -52,7 +27,7 @@ methodsTest <- function(methods, trSplitSeeds, fileSuffix, scale.data=F,
     
     for(trSplitSeed in trSplitSeeds) {
       set.seed(trSplitSeed)
-      tt <- trTest(genderDb[[genderDbID]], p=.7, scale.data=scale.data)
+      tt <- trTest(genderDb[[genderDbID]], p=.7)
       
       for(method in methods) {
         for(fmsForGender in fms[genderDbID]) {
@@ -60,12 +35,16 @@ methodsTest <- function(methods, trSplitSeeds, fileSuffix, scale.data=F,
             fm <- fmsForGender[[fmName]]
             cat(paste('Gender:', genderDbID, 'Training:', method, 'Seed:', trSplitSeed,
                       'Formula:', fmName, "\n"))
+            set.seed(trSplitSeed)
+            indices = createMultiFolds(tt$train$DEXAyagyuz, k = 10, times = 5)
             
             fit <- try(train(as.formula(fm), data=tt$train, method=method,
                              trControl=trainControl(method = 'repeatedcv',
                                                     number=5,
                                                     seeds=trControlSeeds,
-                                                    repeats=10)), TRUE)
+                                                    repeats=10,
+                                                    index= indices
+                                                    )), TRUE)
             if(inherits(fit, "try-error")){
               cat(paste('Error..:', fit))
               cat('\n')
