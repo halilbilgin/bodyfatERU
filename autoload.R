@@ -119,7 +119,7 @@ fms <- list(
                           'dkk_quadriceps')),
     `backward`=toFormula(c('cev_kalca', 'cev_uyluk', 'cev_elblegi',
                            'cev_kulacuzun', 'dkk_triceps', 'dkk_sscapula',
-                           'dkk_quadriceps'))
+                           'dkk_quadriceps', 'yas'))
   ),
   `2`=list(
     `All`=toFormula(inputCols[-2]),
