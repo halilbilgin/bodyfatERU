@@ -110,7 +110,6 @@ seed <- 5
 
 load('rfGA30-100.RData')
 load('rf_sa.RData')
-load('glmStepAIC.RData')
 fms <- list(
   `1`=list(
     `All`=toFormula(inputCols[-2]),
