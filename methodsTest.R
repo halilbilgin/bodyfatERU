@@ -1,4 +1,3 @@
-
 methodsTest <- function(methods, 
                         formulasForTest = c('All', 'SimulatedAnnealing', 'GeneticAlgorithm', 'forward',
                                     'backward', 'stepAIC'),
@@ -36,7 +35,7 @@ methodsTest <- function(methods,
             cat(paste('Gender:', genderDbID, 'Training:', method, 'Seed:', trSplitSeed,
                       'Formula:', fmName, "\n"))
             set.seed(trSplitSeed)
-            indices = createMultiFolds(tt$train$DEXAyagyuz, k = 10, times = 5)
+            indices = createMultiFolds(tt$train$DEXAyagyuz, k = 5, times = 10)
             
             fit <- try(train(as.formula(fm), data=tt$train, method=method,
                              trControl=trainControl(method = 'repeatedcv',
