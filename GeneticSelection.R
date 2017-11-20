@@ -7,8 +7,6 @@ ga_ctrl <- gafsControl(functions = rfGA,
                        genParallel=TRUE, # Use parallel programming
                        allowParallel = TRUE,
                        verbose = T)
- 
-
 
 rf_groups <- lapply(genderDb, function(gdb){ 
     gafs(x = gdb[, inputCols[-2]], y = gdb[, 'DEXAyagyuz'],

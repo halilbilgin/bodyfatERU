@@ -1,10 +1,10 @@
-methodsTest <- function(methods, 
+methodsTestTOTYAG <- function(methods, 
                         formulasForTest = c('All', 'SimulatedAnnealing', 'GeneticAlgorithm', 'forward',
-                                    'backward'),
+                                            'backward'),
                         gendersForTest = c('1', '2'), 
                         trSplitSeeds = 1:50,
                         fileSuffix='try') {
-
+  
   source('autoload.R')
   
   ## initialize result data frame
@@ -20,7 +20,7 @@ methodsTest <- function(methods,
   )
   
   trControlSeeds <- getTrControlSeeds()
-
+  
   for(genderDbID in gendersForTest) {
     #length is = (n_repeats*nresampling)+1
     
@@ -42,8 +42,8 @@ methodsTest <- function(methods,
                                                     repeats = 10,
                                                     seeds=trControlSeeds,
                                                     index= indices
-                                                    )
-                             ), TRUE)
+                             )
+            ), TRUE)
             print(fit)
             if(inherits(fit, "try-error")){
               cat(paste('Error..:', fit))
@@ -52,6 +52,8 @@ methodsTest <- function(methods,
             }
             
             predicted <- predict(fit, newdata=tt$test)
+            predicted <- predicted / tt$test$kilo * 100
+            
             error <- tt$test$DEXAyagyuz - predicted
             curResult <- data.frame(
               gender=genderDbID,

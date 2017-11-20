@@ -1,11 +1,31 @@
-methodsTest <- function(methods, 
-                        formulasForTest = c('All', 'SimulatedAnnealing', 'GeneticAlgorithm', 'forward',
-                                    'backward'),
-                        gendersForTest = c('1', '2'), 
-                        trSplitSeeds = 1:50,
-                        fileSuffix='try') {
-
-  source('autoload.R')
+methodsTest <- function(methods, trSplitSeeds, fileSuffix) {
+  #initialize formulas list
+  load('rfGA30-100.RData')
+  load('rf_sa.RData')
+  fms <- list(
+    `1`=list(
+      `All`=toFormula(inputCols[-2]),
+      `SimulatedAnnealing`= toFormula(rf_sa_groups$`1`$optVariables),
+      `GeneticAlgorithm`=toFormula(rf_groups$`1`$optVariables),
+      `forward`=toFormula(c('kilo', 'cev_kalca', 'dkk_biceps', 
+                            'dkk_quadriceps')),
+      `backward`=toFormula(c('cev_kalca', 'cev_uyluk', 'cev_elblegi',
+                             'cev_kulacuzun', 'dkk_triceps', 'dkk_sscapula',
+                             'dkk_quadriceps'))
+    ),
+    `2`=list(
+      `All`=toFormula(inputCols[-2]),
+      `SimulatedAnnealing`=toFormula(rf_sa_groups$`2`$optVariables),
+      `GeneticAlgorithm`=toFormula(rf_groups$`2`$optVariables),
+      `forward`=toFormula(c('kilo', 'cev_bel', 'dkk_triceps',
+                            'dkk_sscapula', 'dkk_quadriceps', 'dkk_gogus')),
+      `backward`=toFormula(c('cev_boyun', 'cev_bel', 'cev_kulacuzun',
+                             'dkk_sscapula', 'dkk_silliak',
+                             'dkk_abdomen', 'dkk_quadriceps',
+                             'dkk_gogus'))
+    )
+  )
+  
   
   ## initialize result data frame
   result <- data.frame(
@@ -20,8 +40,8 @@ methodsTest <- function(methods,
   )
   
   trControlSeeds <- getTrControlSeeds()
-
-  for(genderDbID in gendersForTest) {
+  
+  for(genderDbID in names(genderDb)) {
     #length is = (n_repeats*nresampling)+1
     
     for(trSplitSeed in trSplitSeeds) {
@@ -30,21 +50,15 @@ methodsTest <- function(methods,
       
       for(method in methods) {
         for(fmsForGender in fms[genderDbID]) {
-          for(fmName in formulasForTest) {
+          for(fmName in names(fmsForGender)) {
             fm <- fmsForGender[[fmName]]
-            cat(paste('Gender:', genderDbID, 'Training:', method, 'Seed:', trSplitSeed,
-                      'Formula:', fmName, "\n"))
-            set.seed(trSplitSeed)
-            indices = createMultiFolds(tt$train$DEXAyagyuz, k = 5, times = 10)
+            cat(paste('Gender:', genderDbID, 'Training:', method, 'Formula:', fmName, "\n"))
+            
             fit <- try(train(as.formula(fm), data=tt$train, method=method,
                              trControl=trainControl(method = 'repeatedcv',
-                                                    number = 5,
-                                                    repeats = 10,
+                                                    number=5,
                                                     seeds=trControlSeeds,
-                                                    index= indices
-                                                    )
-                             ), TRUE)
-            print(fit)
+                                                    repeats=10)), TRUE)
             if(inherits(fit, "try-error")){
               cat(paste('Error..:', fit))
               cat('\n')
