@@ -3,6 +3,7 @@ This repo contains the source code of the study we conducted during my internshi
 
 Publication info:
 *Halil BILGIN*, Gokmen ZARARSIZ, Volkan OZKAYA, et al. (October, 2017.) Improved Estimation of Body Fat Percentage via Machine-Learning Approaches. XIX. National II. International Biostatistical Conference. 
+https://www.biyoistatistikkongresi.net/wp-content/uploads/2021/12/Bildiri_Kitabi_2017_TR.pdf
 
 Abstract: https://docs.google.com/document/d/14WV7AxCIWtpHmQqyRRkLZAdo4Oi-VTy9JEC6wgj1quI/edit?usp=sharing
 
